@@ -123,3 +123,19 @@ test("product mapping", () => {
     },
   });
 });
+
+test("multiple transformers", () => {
+  const source = { value: 1 };
+  const add = (x) => x + 1;
+  const double = (x) => x * 2;
+  const expected = mapez(source, {
+    r1: ["value", add],
+    r2: ["value", double, add],
+    r3: ["value", add, double],
+  });
+  expect(expected).toEqual({
+    r1: 2,
+    r2: 3,
+    r3: 4,
+  });
+});

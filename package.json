@@ -1,6 +1,6 @@
 {
   "name": "mapez",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Map source object into destination object with ease",
   "typings": "index.d.ts",
   "main": "src/index.js",

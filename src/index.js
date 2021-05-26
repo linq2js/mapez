@@ -26,7 +26,7 @@ function select(source, selector, key) {
    *
    */
   if (selectorType === "string") {
-    let [path, sep, execludeOrIncludeProps] = selector.split(/([>!])/);
+    let [path, sep, excludeOrIncludeProps] = selector.split(/([>!])/);
     if (!path) path = "*";
     let selectedSource;
     switch (path) {
@@ -41,15 +41,23 @@ function select(source, selector, key) {
         const parts = path.split(".");
         selectedSource = parts.reduce((obj, prop) => {
           if (obj && typeof obj === "object") {
+            if (prop === "#keys") {
+              return Object.keys(obj);
+            }
+            if (prop === "#values") {
+              return Object.values(obj);
+            }
             return obj[prop];
           }
           return undefined;
         }, source);
     }
 
-    if (!execludeOrIncludeProps) return selectedSource;
+    if (!excludeOrIncludeProps) {
+      return selectedSource;
+    }
 
-    const propNames = execludeOrIncludeProps.split("|");
+    const propNames = excludeOrIncludeProps.split("|");
     const isExclude = sep === "!";
 
     return Object.keys(selectedSource).reduce((obj, prop) => {
@@ -64,9 +72,27 @@ function select(source, selector, key) {
   }
 
   if (Array.isArray(selector)) {
-    const f = selector[selector.length - 1];
-    const selectors = selector.slice(0, selector.length - 1);
-    return f(...selectors.map((x) => select(source, x)));
+    const transformers = selector.reduceRight((array, value) => {
+      if (typeof value === "function") {
+        array.unshift(value);
+      }
+      return array;
+    }, []);
+
+    const selectors = selector.slice(0, selector.length - transformers.length);
+
+    return transformers.reduce(
+      (args, transformer) => {
+        let result = transformer(...args);
+        // is curry
+        while (typeof result === "function") {
+          args.shift();
+          result = result(args[0]);
+        }
+        return [result];
+      },
+      selectors.map((x) => select(source, x))
+    )[0];
   }
 
   if (selectorType === "object") {
@@ -92,7 +118,7 @@ function select(source, selector, key) {
     }
     return result;
   }
-  throw new Error("Invalid selector");
+  throw new Error("Invalid spec");
 }
 
 export default mapez;
