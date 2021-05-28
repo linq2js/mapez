@@ -16,9 +16,17 @@ or
 
 ## Usage
 
+### ES6
+
 ```js
 import mapez from "mapez";
+const result = mapez(source, spec);
+```
 
+### CommonJS
+
+```js
+const mapez = require("mapez/dist");
 const result = mapez(source, spec);
 ```
 
