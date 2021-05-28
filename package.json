@@ -1,14 +1,19 @@
 {
   "name": "mapez",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Map source object into destination object with ease",
-  "typings": "index.d.ts",
+  "typings": "src/index.d.ts",
   "main": "src/index.js",
+  "files": [
+    "src",
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "test": "jest",
+    "dist": "rollup src/index.js --file ./dist/index.js --format cjs",
     "_publish": "npm publish"
   },
   "author": "linq2js",
@@ -34,6 +39,7 @@
     "cross-env": "^7.0.2",
     "jest": "^26.2.2",
     "node-fetch": "^2.6.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "rollup": "^2.50.2"
   }
 }
