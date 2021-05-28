@@ -184,3 +184,28 @@ Indicate excluded properties
 // source: { dimension: { width: 0, height: 0, depth: 0 } }
 // value: { depth: 0 }
 ```
+
+## Advanced Usage
+
+You can use multiple transformers in a row, the first transformer retrieves all selected values as arguments,
+the following transformer receives the result of the previous transformer as an argument
+
+```js
+const classyGreeting = (firstName, lastName) =>
+  "The name's " + lastName + ", " + firstName + " " + lastName;
+const toUpper = (string) => string.toUpperCase();
+const source = {
+  firstName: "James",
+  lastName: "Bond",
+};
+const spec = [
+  "firstName",
+  "lastName",
+  // classyGreeting retrieves firstName and lastName from selectors
+  classyGreeting,
+  // toUpper retrieves result of classyGreeting
+  toUpper,
+];
+const result = mapez(source, spec);
+// result: "THE NAME'S BOND, JAMES BOND"
+```

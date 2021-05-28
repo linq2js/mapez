@@ -139,3 +139,23 @@ test("multiple transformers", () => {
     r3: 4,
   });
 });
+
+test("multiple transformers 2", () => {
+  const classyGreeting = (firstName, lastName) =>
+    "The name's " + lastName + ", " + firstName + " " + lastName;
+  const toUpper = (string) => string.toUpperCase();
+  const source = {
+    firstName: "James",
+    lastName: "Bond",
+  };
+  const spec = [
+    "firstName",
+    "lastName",
+    // classyGreeting retrieves firstName and lastName from selectors
+    classyGreeting,
+    // toUpper retrieves result of classyGreeting as first argument
+    toUpper,
+  ];
+  const expected = mapez(source, spec);
+  expect(expected).toBe("THE NAME'S BOND, JAMES BOND");
+});
